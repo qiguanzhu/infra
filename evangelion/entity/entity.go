@@ -14,14 +14,10 @@
  *　　 ┗━┓┓┏━━┳┓┏┛
  *　　   ┃┫┫  ┃┫┫
  *      ┗┻┛　 ┗┻┛
- @Time    : 2024/10/12 -- 16:47
+ @Time    : 2024/10/17 -- 12:29
  @Author  : 亓官竹 ❤️ MONEY
  @Copyright 2024 亓官竹
- @Description: logger.go
+ @Description: entity.go
 */
 
-package apogo
-
-type ApogoLogger interface {
-	Printf(format string, args ...interface{})
-}
+package entity
