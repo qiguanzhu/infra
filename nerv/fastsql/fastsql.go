@@ -27,7 +27,7 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/pkg/errors"
-	"github.com/qiguanzhu/infra/seele/xsqlIface"
+	"github.com/qiguanzhu/infra/seele/zsql"
 	"reflect"
 )
 
@@ -45,15 +45,15 @@ func init() {
 	}
 }
 
-func (c *constructor) GetBuilder() xsqlIface.BuilderProxy {
+func (c *constructor) GetBuilder() zsql.BuilderProxy {
 	return c._builder
 }
 
-func (c *constructor) GetScanner() xsqlIface.ScannerProxy {
+func (c *constructor) GetScanner() zsql.ScannerProxy {
 	return c._scanner
 }
 
-func (c *constructor) ComplexSelect(dbx *sql.DB, builder xsqlIface.XSqlizer, target any, bind xsqlIface.Bind) func(ctx context.Context) error {
+func (c *constructor) ComplexSelect(dbx *sql.DB, builder zsql.ZSqlizer, target any, bind zsql.BindFunc) func(ctx context.Context) error {
 	return func(ctx context.Context) error {
 		query, args, err := builder.ToSql()
 		if err != nil {
@@ -71,7 +71,7 @@ func (c *constructor) ComplexSelect(dbx *sql.DB, builder xsqlIface.XSqlizer, tar
 	}
 }
 
-func (c *constructor) ComplexExec(dbx *sql.DB, builder xsqlIface.XSqlizer) func(ctx context.Context) error {
+func (c *constructor) ComplexExec(dbx *sql.DB, builder zsql.ZSqlizer) func(ctx context.Context) error {
 	return func(ctx context.Context) error {
 		query, args, err := builder.ToSql()
 		if err != nil {
@@ -113,4 +113,25 @@ func Mapping(src, tar any) error {
 
 func match(srcT, tarT reflect.Type) bool {
 	return srcT == tarT
+}
+
+// FastRepo only for convenient, a wrapper of zsql interfaces
+type FastRepo[SvcObj any] interface {
+	zsql.RepoModel[SvcObj]
+}
+
+type FastQueryRequest[SvcObj any] interface {
+	zsql.QueryRequest[SvcObj]
+}
+
+type FastInsertRequest[SvcObj any] interface {
+	zsql.InsertRequest[SvcObj]
+}
+
+type FastUpdateRequest[SvcObj any] interface {
+	zsql.UpdateRequest[SvcObj]
+}
+
+type FastComplexRequest[SvcObj any] interface {
+	zsql.ComplexRequest[SvcObj]
 }

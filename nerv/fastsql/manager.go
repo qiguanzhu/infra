@@ -25,7 +25,7 @@ package fastsql
 import (
 	"database/sql"
 	"fmt"
-	"github.com/qiguanzhu/infra/seele/xsqlIface"
+	"github.com/qiguanzhu/infra/seele/zsql"
 	"time"
 )
 
@@ -51,7 +51,7 @@ func Connect(dsn string) (*sql.DB, error) {
 	return db, nil
 }
 
-func MustConnect(dsn string) xsqlIface.XDB {
+func MustConnect(dsn string) zsql.XDB {
 	db, err := Connect(dsn)
 	if err != nil {
 		panic(fmt.Sprintf("connect to mysql %s error %+v", dsn, err))
