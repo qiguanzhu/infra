@@ -28,8 +28,8 @@ import (
 	"fmt"
 	sq "github.com/Masterminds/squirrel"
 	"github.com/qiguanzhu/infra/pkg"
-	"github.com/qiguanzhu/infra/seele/xsqlIface"
-	"github.com/qiguanzhu/infra/seele/xsqlIface/sqlutils"
+	"github.com/qiguanzhu/infra/seele/zsql"
+	"github.com/qiguanzhu/infra/seele/zsql/sqlutils"
 	"strings"
 )
 
@@ -162,11 +162,7 @@ func (f fastBuilder) BuildReplaceIgnore(tableName string, data []map[string]inte
 	return query, args, nil
 }
 
-func (fastBuilder) BuildCustomize(tableName string, f func(string) (string, []interface{}, error)) (string, []interface{}, error) {
-	return f(tableName)
-}
-
-func (fastBuilder) AggregateQuery(ctx context.Context, db xsqlIface.XDB, tableName string, where map[string]interface{}, aggregate xsqlIface.AggregateSymbolBuilder) (xsqlIface.ResultResolver, error) {
+func (fastBuilder) AggregateQuery(ctx context.Context, db zsql.XDB, tableName string, where map[string]interface{}, aggregate zsql.AggregateSymbolBuilder) (zsql.ResultResolver, error) {
 	return nil, errors.New("not implemented")
 }
 
@@ -184,7 +180,7 @@ func formatWhere(where map[string]interface{}, builder sq.SelectBuilder) (sq.Sel
 		if nil != err {
 			return builder, err
 		}
-		var op xsqlIface.XSqlizer
+		var op zsql.ZSqlizer
 		op, err = sqlutils.OpOp[operator](field, v)
 		if nil != err {
 			return builder, err

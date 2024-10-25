@@ -24,15 +24,15 @@ package fastsql
 
 import (
 	"github.com/qiguanzhu/infra/pkg"
-	"github.com/qiguanzhu/infra/seele/xsqlIface"
-	"github.com/qiguanzhu/infra/seele/xsqlIface/sqlutils"
+	"github.com/qiguanzhu/infra/seele/zsql"
+	"github.com/qiguanzhu/infra/seele/zsql/sqlutils"
 	"reflect"
 	"strconv"
 )
 
 type fastScanner struct{}
 
-func (s fastScanner) Scan(rows xsqlIface.Rows, target any, b xsqlIface.Bind) error {
+func (s fastScanner) Scan(rows zsql.Rows, target any, b zsql.BindFunc) error {
 	if nil == target || reflect.ValueOf(target).IsNil() || reflect.TypeOf(target).Kind() != reflect.Ptr {
 		return pkg.ErrScannerTargetNotSettable
 	}
@@ -75,11 +75,11 @@ func (s fastScanner) Scan(rows xsqlIface.Rows, target any, b xsqlIface.Bind) err
 	}
 }
 
-func (s fastScanner) ScanMap(rows xsqlIface.Rows) ([]map[string]interface{}, error) {
+func (s fastScanner) ScanMap(rows zsql.Rows) ([]map[string]interface{}, error) {
 	return sqlutils.ResolveDataFromRows(rows)
 }
 
-func (s fastScanner) ScanMapDecode(rows xsqlIface.Rows) ([]map[string]interface{}, error) {
+func (s fastScanner) ScanMapDecode(rows zsql.Rows) ([]map[string]interface{}, error) {
 	results, err := sqlutils.ResolveDataFromRows(rows)
 	if nil != err {
 		return nil, err
@@ -110,7 +110,7 @@ func (s fastScanner) ScanMapDecode(rows xsqlIface.Rows) ([]map[string]interface{
 	return results, nil
 }
 
-func (s fastScanner) ScanMapDecodeClose(rows xsqlIface.Rows) ([]map[string]interface{}, error) {
+func (s fastScanner) ScanMapDecodeClose(rows zsql.Rows) ([]map[string]interface{}, error) {
 	result, err := s.ScanMapDecode(rows)
 	if nil != rows {
 		errClose := rows.Close()
@@ -122,7 +122,7 @@ func (s fastScanner) ScanMapDecodeClose(rows xsqlIface.Rows) ([]map[string]inter
 }
 
 // ScanMapClose is the same as ScanMap and close the rows
-func (s fastScanner) ScanMapClose(rows xsqlIface.Rows) ([]map[string]interface{}, error) {
+func (s fastScanner) ScanMapClose(rows zsql.Rows) ([]map[string]interface{}, error) {
 	result, err := s.ScanMap(rows)
 	if nil != rows {
 		errClose := rows.Close()
@@ -135,7 +135,7 @@ func (s fastScanner) ScanMapClose(rows xsqlIface.Rows) ([]map[string]interface{}
 
 // ScanClose is the same as Scan and helps you Close the rows
 // Don't exec the rows.Close after calling this
-func (s fastScanner) ScanClose(rows xsqlIface.Rows, target any, b xsqlIface.Bind) error {
+func (s fastScanner) ScanClose(rows zsql.Rows, target any, b zsql.BindFunc) error {
 	err := s.Scan(rows, target, b)
 	if nil != rows {
 		errClose := rows.Close()
