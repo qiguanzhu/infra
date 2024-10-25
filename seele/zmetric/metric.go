@@ -20,7 +20,7 @@
  @Description: metric.go
 */
 
-package xmetricIface
+package zmetric
 
 // Counter describes a metric that accumulates values monotonically.
 // An example of a counter is the number of received rpc requests.

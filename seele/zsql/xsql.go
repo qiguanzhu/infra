@@ -20,7 +20,7 @@
  @Description: xsql.go
 */
 
-package xsqlIface
+package zsql
 
 import (
 	"context"
@@ -62,5 +62,3 @@ type SqlConstructor interface {
 	GetBuilder() BuilderProxy
 	GetScanner() ScannerProxy
 }
-
-type Bind func(rows Rows) (to any, err error)

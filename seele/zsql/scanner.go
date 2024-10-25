@@ -20,12 +20,12 @@
  @Description: scanner.go
 */
 
-package xsqlIface
+package zsql
 
 // ScannerProxy 读取查询结果 or 执行结果 到 目标结构体
 type ScannerProxy interface {
-	Scan(rows Rows, target any, f Bind) error
-	ScanClose(rows Rows, target any, f Bind) error
+	Scan(rows Rows, target any, f BindFunc) error
+	ScanClose(rows Rows, target any, f BindFunc) error
 	ScanMap(rows Rows) ([]map[string]any, error)
 	ScanMapDecode(rows Rows) ([]map[string]any, error)
 	ScanMapClose(rows Rows) ([]map[string]any, error)
@@ -50,7 +50,4 @@ type ByteUnmarshaler interface {
 	UnmarshalByte(data []byte) error
 }
 
-// XSqlizer suit for any struct present ToSql function
-type XSqlizer interface {
-	ToSql() (string, []interface{}, error)
-}
+type BindFunc func(rows Rows) (to any, err error)

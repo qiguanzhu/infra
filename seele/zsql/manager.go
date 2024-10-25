@@ -20,19 +20,19 @@
  @Description: manager.go
 */
 
-package xsqlIface
+package zsql
 
 import (
 	"context"
 	"database/sql"
-	"github.com/qiguanzhu/infra/seele/xconfigIface"
+	"github.com/qiguanzhu/infra/seele/zconfig"
 )
 
 // ManagerProxy DBManagerProxy 定义 manager 的操作。涉及不同的库 or 配置可以维护不同的 manager。
 type ManagerProxy interface {
-	InitConf(ctx context.Context, config xconfigIface.ConfigCenter) error
+	InitConf(ctx context.Context, config zconfig.ConfigCenter) error
 	GetDB(ctx context.Context, insName, dbName string) (XDBWrapper, error)
-	ReloadConf(ctx context.Context, config xconfigIface.ConfigCenter, event xconfigIface.ChangeEvent) error
+	ReloadConf(ctx context.Context, config zconfig.ConfigCenter, event zconfig.ChangeEvent) error
 	GetInstance(insName, dbName string) (DBInstanceProxy, error)
 }
 

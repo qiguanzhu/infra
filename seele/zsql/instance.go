@@ -14,21 +14,17 @@
  *　　 ┗━┓┓┏━━┳┓┏┛
  *　　   ┃┫┫  ┃┫┫
  *      ┗┻┛　 ┗┻┛
- @Time    : 2024/10/12 -- 15:33
+ @Time    : 2024/9/30 -- 15:02
  @Author  : 亓官竹 ❤️ MONEY
  @Copyright 2024 亓官竹
- @Description: driver.go
+ @Description: dbrouter.go
 */
 
-package xconfigIface
+package zsql
 
-import (
-	"context"
-)
-
-// Driver implements by each config center(such as apollo)
-// config center should call 'Register' to register itself
-type Driver interface {
-	// New ...
-	New(ctx context.Context, serviceName string, namespaceNames []string, options ...Option) (ConfigCenter, error)
+// InstancePlayer ...
+type InstancePlayer interface {
+	GetType() string
+	Close() error
+	Reload() error
 }

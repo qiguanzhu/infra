@@ -20,7 +20,7 @@
  @Description: evolvedinit.go
 */
 
-package xconfigIface
+package xconfig
 
 import (
 	"bytes"

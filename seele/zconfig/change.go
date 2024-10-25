@@ -20,7 +20,7 @@
  @Description: config.go
 */
 
-package xconfigIface
+package zconfig
 
 // ChangeType ...
 type ChangeType int

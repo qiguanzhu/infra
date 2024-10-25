@@ -20,7 +20,7 @@
  @Description: database.go
 */
 
-package xsqlIface
+package zsql
 
 import (
 	"database/sql"
