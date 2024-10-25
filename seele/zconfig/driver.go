@@ -14,15 +14,21 @@
  *　　 ┗━┓┓┏━━┳┓┏┛
  *　　   ┃┫┫  ┃┫┫
  *      ┗┻┛　 ┗┻┛
- @Time    : 2024/10/9 -- 14:58
+ @Time    : 2024/10/12 -- 15:33
  @Author  : 亓官竹 ❤️ MONEY
  @Copyright 2024 亓官竹
- @Description: breaker.go
+ @Description: driver.go
 */
 
-package breaker
+package zconfig
 
-type BreakerManagerProxy interface {
-	StatBreaker(cluster, table string, err error)
-	Entry(cluster, table string) bool
+import (
+	"context"
+)
+
+// Driver implements by each config center(such as apollo)
+// config center should call 'Register' to register itself
+type Driver interface {
+	// New ...
+	New(ctx context.Context, serviceName string, namespaceNames []string, options ...Option) (ConfigCenter, error)
 }

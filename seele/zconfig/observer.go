@@ -20,7 +20,7 @@
  @Description: observer.go
 */
 
-package xconfigIface
+package zconfig
 
 import (
 	"context"

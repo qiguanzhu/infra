@@ -20,7 +20,7 @@
  @Description: repo.go
 */
 
-package xsqlIface
+package zsql
 
 import (
 	"context"
@@ -28,16 +28,17 @@ import (
 
 type DataObj[SvcObj any] interface {
 	ToEntity(ctx context.Context) *SvcObj
-	// Reflect(ctx context.Context)
 }
 
 // DaoModel
 // interactive between DataObj and db
 // reflect db instance rows to DataObj
 type DaoModel[SvcObj any, DObj DataObj[SvcObj]] interface {
-	Init(cons SqlConstructor, tableName func() string, omits func() []string, b Bind)
+	Init(cons SqlConstructor, tableName func() string, omits func() []string, b BindFunc)
 	TableName() string
 	Omits() []string
+	GetScanner() ScannerProxy
+	GetBuilder() BuilderProxy
 
 	SelectOne(ctx context.Context, db XDB, where map[string]interface{}) (DObj, error)
 	SelectMulti(ctx context.Context, db XDB, where map[string]interface{}) ([]DObj, error)
@@ -47,10 +48,21 @@ type DaoModel[SvcObj any, DObj DataObj[SvcObj]] interface {
 	CountOf(ctx context.Context, db XDB, where map[string]interface{}) (count int, err error)
 	ToEntity(ctx context.Context, t DObj) *SvcObj
 	MultiToEntity(ctx context.Context, ts []DObj) []*SvcObj
-
-	ComplexQuery(ctx context.Context, db XDB, f func(string) (string, []interface{}, error)) ([]DObj, error)
-	ComplexExec(ctx context.Context, db XDB, f func(string) (string, []interface{}, error)) (int64, error)
 }
+
+type ComplexQueryMod[ans any] func(
+	ctx context.Context,
+	db XDB,
+	scanner ScannerProxy,
+	f ToSql,
+	bind BindFunc,
+) (res []ans, err error)
+
+type ComplexExecMod func(
+	ctx context.Context,
+	db XDB,
+	ts ToSql,
+) (int64, error)
 
 // RepoModel
 // basic function definition of sql repo
@@ -91,9 +103,12 @@ type UpdateRequest[SvcObj any] interface {
 	Update(ctx context.Context, conditions, changes ConditionsProxy, opAccount string) error // update
 }
 
+// ComplexRequest
+// usually ToSql will pass from serviceModel through repoModel direct to daoModel and be executed
+// if you concern any SQL injection issue, you can easily build your own complex query function at any logical name in your repoModel
 type ComplexRequest[SvcObj any] interface {
-	ComplexQuery(ctx context.Context, f func(ctx context.Context) error, b Bind) ([]*SvcObj, error)
-	ComplexExec(ctx context.Context, f func(ctx context.Context) error, b Bind) error
+	ComplexQuery(ctx context.Context, ts ToSql, columns []string, b BindFunc) ([]*SvcObj, error)
+	ComplexExec(ctx context.Context, ts ToSql) error
 }
 
 type ConditionsProxy interface {

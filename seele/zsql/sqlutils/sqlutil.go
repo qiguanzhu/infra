@@ -26,7 +26,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/qiguanzhu/infra/pkg"
-	"github.com/qiguanzhu/infra/seele/xsqlIface"
+	"github.com/qiguanzhu/infra/seele/zsql"
 	"reflect"
 	"regexp"
 	"sort"
@@ -107,7 +107,7 @@ func resolveFields(m map[string]interface{}) []string {
 	return fields
 }
 
-func whereConnector(conditions ...xsqlIface.Comparable) (string, []interface{}) {
+func whereConnector(conditions ...zsql.Comparable) (string, []interface{}) {
 	if len(conditions) == 0 {
 		return "", nil
 	}
@@ -176,7 +176,7 @@ func BuildUpdate(table string, update map[string]interface{}, clauses *Statement
 	return cond, vals, nil
 }
 
-func BuildDelete(table string, conditions ...xsqlIface.Comparable) (string, []interface{}, error) {
+func BuildDelete(table string, conditions ...zsql.Comparable) (string, []interface{}, error) {
 	whereString, vals := whereConnector(conditions...)
 	if "" == whereString {
 		return fmt.Sprintf("DELETE FROM %s", table), nil, nil
@@ -187,8 +187,8 @@ func BuildDelete(table string, conditions ...xsqlIface.Comparable) (string, []in
 	return cond, vals, nil
 }
 
-func splitCondition(conditions []xsqlIface.Comparable) ([]xsqlIface.Comparable, []xsqlIface.Comparable) {
-	var having []xsqlIface.Comparable
+func splitCondition(conditions []zsql.Comparable) ([]zsql.Comparable, []zsql.Comparable) {
+	var having []zsql.Comparable
 	var i int
 	for i = len(conditions) - 1; i >= 0; i-- {
 		if _, ok := conditions[i].(nilComparable); ok {
@@ -428,13 +428,13 @@ func resolveHaving(having interface{}) (map[string]interface{}, error) {
 var (
 	cpPool = sync.Pool{
 		New: func() interface{} {
-			return make([]xsqlIface.Comparable, 0)
+			return make([]zsql.Comparable, 0)
 		},
 	}
 )
 
-func getCpPool() ([]xsqlIface.Comparable, func()) {
-	obj := cpPool.Get().([]xsqlIface.Comparable)
+func getCpPool() ([]zsql.Comparable, func()) {
+	obj := cpPool.Get().([]zsql.Comparable)
 	return obj[:0], func() { cpPool.Put(obj) }
 }
 
@@ -449,7 +449,7 @@ func IsStringInSlice(str string, arr []string) bool {
 	return false
 }
 
-func GetWhereConditions(where map[string]interface{}) ([]xsqlIface.Comparable, func(), error) {
+func GetWhereConditions(where map[string]interface{}) ([]zsql.Comparable, func(), error) {
 	if len(where) == 0 {
 		return nil, emptyFunc, nil
 	}
@@ -491,7 +491,7 @@ const (
 	opNull = "null"
 )
 
-func buildWhereCondition(mapSet *whereMapSet) ([]xsqlIface.Comparable, func(), error) {
+func buildWhereCondition(mapSet *whereMapSet) ([]zsql.Comparable, func(), error) {
 	cpArr, release := getCpPool()
 	for _, operator := range OpOrder {
 		whereMap, ok := mapSet.set[operator]
@@ -728,4 +728,14 @@ func arrayInterfaceToArrayInt(val interface{}) (arr []int, err error) {
 		return
 	}
 	return
+}
+
+func ColumnCalculator(columns ...string) string {
+	if len(columns) == 0 {
+		return "*"
+	}
+	if len(columns) == 1 {
+		return columns[0]
+	}
+	return strings.Join(columns, ",")
 }

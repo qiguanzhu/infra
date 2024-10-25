@@ -20,7 +20,7 @@
  @Description: label.go
 */
 
-package xmetricIface
+package zmetric
 
 import (
 	"fmt"

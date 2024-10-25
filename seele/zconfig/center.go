@@ -20,7 +20,7 @@
  @Description: interface.go
 */
 
-package xconfigIface
+package zconfig
 
 import (
 	"context"
@@ -65,19 +65,19 @@ type ConfigCenter interface {
 	GetFloat64WithNamespace(ctx context.Context, namespace, key string) (float64, bool)
 	// GetIntSlice get []int value form default namespace application
 	GetIntSlice(ctx context.Context, keyPrefix string) ([]int, bool)
-	// GetIntSlice get []int value form specified namespace
+	// GetIntSliceWithNamespace get []int value form specified namespace
 	GetIntSliceWithNamespace(ctx context.Context, namespace, keyPrefix string) ([]int, bool)
-	// GetIntSlice get []int value form default namespace application
+	// GetInt64Slice get []int value form default namespace application
 	GetInt64Slice(ctx context.Context, keyPrefix string) ([]int64, bool)
-	// GetIntSlice get []int value form specified namespace
+	// GetInt64SliceWithNamespace get []int value form specified namespace
 	GetInt64SliceWithNamespace(ctx context.Context, namespace, keyPrefix string) ([]int64, bool)
-	// GetIntSlice get []int value form default namespace application
+	// GetInt32Slice get []int value form default namespace application
 	GetInt32Slice(ctx context.Context, keyPrefix string) ([]int32, bool)
-	// GetIntSlice get []int value form specified namespace
+	// GetInt32SliceWithNamespace get []int value form specified namespace
 	GetInt32SliceWithNamespace(ctx context.Context, namespace, keyPrefix string) ([]int32, bool)
-	// GetIntSlice get []int value form default namespace application
+	// GetStringSlice get []int value form default namespace application
 	GetStringSlice(ctx context.Context, keyPrefix string) ([]string, bool)
-	// GetIntSlice get []int value form specified namespace
+	// GetStringSliceWithNamespace get []int value form specified namespace
 	GetStringSliceWithNamespace(ctx context.Context, namespace, keyPrefix string) ([]string, bool)
 	// GetAllKeys get all keys from default namespace application
 	GetAllKeys(ctx context.Context) []string

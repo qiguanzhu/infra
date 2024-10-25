@@ -24,10 +24,10 @@ package sqlutils
 
 import (
 	"github.com/qiguanzhu/infra/pkg"
-	"github.com/qiguanzhu/infra/seele/xsqlIface"
+	"github.com/qiguanzhu/infra/seele/zsql"
 )
 
-func ResolveDataFromRows(rows xsqlIface.Rows) ([]map[string]interface{}, error) {
+func ResolveDataFromRows(rows zsql.Rows) ([]map[string]interface{}, error) {
 	if nil == rows {
 		return nil, pkg.ErrScannerNilRows
 	}

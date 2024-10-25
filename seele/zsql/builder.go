@@ -20,7 +20,7 @@
  @Description: dao.go
 */
 
-package xsqlIface
+package zsql
 
 import "context"
 
@@ -33,7 +33,6 @@ type BuilderProxy interface {
 	BuildInsert(tableName string, data []map[string]interface{}) (string, []interface{}, error)
 	BuildInsertIgnore(tableName string, data []map[string]interface{}) (string, []interface{}, error)
 	BuildReplaceIgnore(tableName string, data []map[string]interface{}) (string, []interface{}, error)
-	BuildCustomize(tableName string, f func(string) (string, []interface{}, error)) (string, []interface{}, error)
 	AggregateQuery(ctx context.Context, db XDB, tableName string, where map[string]interface{}, aggregate AggregateSymbolBuilder) (ResultResolver, error)
 }
 
@@ -54,3 +53,10 @@ type ResultResolver interface {
 	Int64() int64
 	Float64() float64
 }
+
+// ZSqlizer is a wrapper of "github.com/Masterminds/squirrel".Sqlizer
+// so we can make some customizes of ToSql function
+type ZSqlizer interface {
+	ToSql() (string, []interface{}, error)
+}
+type ToSql func(tName string, columns ...string) (string, []interface{}, error)

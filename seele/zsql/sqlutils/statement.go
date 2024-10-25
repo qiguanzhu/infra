@@ -27,7 +27,7 @@ import (
 	"fmt"
 	"github.com/Masterminds/squirrel"
 	"github.com/qiguanzhu/infra/pkg"
-	"github.com/qiguanzhu/infra/seele/xsqlIface"
+	"github.com/qiguanzhu/infra/seele/zsql"
 	"reflect"
 	"strings"
 )
@@ -41,7 +41,7 @@ type StatementClauses struct {
 	limit      *eleLimit
 	groupBy    string
 	forceIndex string
-	conditions []xsqlIface.Comparable
+	conditions []zsql.Comparable
 }
 
 type whereMapSet struct {
@@ -317,96 +317,96 @@ func buildBetween(notBetween bool, key string, vals []interface{}) (string, erro
 	return fmt.Sprintf("(%s %s ? AND ?)", key, operator), nil
 }
 
-type compareProducer func(m map[string]interface{}) (xsqlIface.Comparable, error)
+type compareProducer func(m map[string]interface{}) (zsql.Comparable, error)
 
 var op2Comparable = map[string]compareProducer{
-	opEq: func(m map[string]interface{}) (xsqlIface.Comparable, error) {
+	opEq: func(m map[string]interface{}) (zsql.Comparable, error) {
 		return Eq(m), nil
 	},
-	opNe1: func(m map[string]interface{}) (xsqlIface.Comparable, error) {
+	opNe1: func(m map[string]interface{}) (zsql.Comparable, error) {
 		return Ne(m), nil
 	},
-	opNe2: func(m map[string]interface{}) (xsqlIface.Comparable, error) {
+	opNe2: func(m map[string]interface{}) (zsql.Comparable, error) {
 		return Ne(m), nil
 	},
-	opIn: func(m map[string]interface{}) (xsqlIface.Comparable, error) {
+	opIn: func(m map[string]interface{}) (zsql.Comparable, error) {
 		wp, err := convertWhereMapToWhereMapSlice(m)
 		if nil != err {
 			return nil, err
 		}
 		return In(wp), nil
 	},
-	opNotIn: func(m map[string]interface{}) (xsqlIface.Comparable, error) {
+	opNotIn: func(m map[string]interface{}) (zsql.Comparable, error) {
 		wp, err := convertWhereMapToWhereMapSlice(m)
 		if nil != err {
 			return nil, err
 		}
 		return NotIn(wp), nil
 	},
-	opBetween: func(m map[string]interface{}) (xsqlIface.Comparable, error) {
+	opBetween: func(m map[string]interface{}) (zsql.Comparable, error) {
 		wp, err := convertWhereMapToWhereMapSlice(m)
 		if nil != err {
 			return nil, err
 		}
 		return Between(wp), nil
 	},
-	opNotBetween: func(m map[string]interface{}) (xsqlIface.Comparable, error) {
+	opNotBetween: func(m map[string]interface{}) (zsql.Comparable, error) {
 		wp, err := convertWhereMapToWhereMapSlice(m)
 		if nil != err {
 			return nil, err
 		}
 		return NotBetween(wp), nil
 	},
-	opGt: func(m map[string]interface{}) (xsqlIface.Comparable, error) {
+	opGt: func(m map[string]interface{}) (zsql.Comparable, error) {
 		return Gt(m), nil
 	},
-	opGte: func(m map[string]interface{}) (xsqlIface.Comparable, error) {
+	opGte: func(m map[string]interface{}) (zsql.Comparable, error) {
 		return Gte(m), nil
 	},
-	opLt: func(m map[string]interface{}) (xsqlIface.Comparable, error) {
+	opLt: func(m map[string]interface{}) (zsql.Comparable, error) {
 		return Lt(m), nil
 	},
-	opLte: func(m map[string]interface{}) (xsqlIface.Comparable, error) {
+	opLte: func(m map[string]interface{}) (zsql.Comparable, error) {
 		return Lte(m), nil
 	},
-	opLike: func(m map[string]interface{}) (xsqlIface.Comparable, error) {
+	opLike: func(m map[string]interface{}) (zsql.Comparable, error) {
 		return Like(m), nil
 	},
-	opNotLike: func(m map[string]interface{}) (xsqlIface.Comparable, error) {
+	opNotLike: func(m map[string]interface{}) (zsql.Comparable, error) {
 		return NotLike(m), nil
 	},
-	opNull: func(m map[string]interface{}) (xsqlIface.Comparable, error) {
+	opNull: func(m map[string]interface{}) (zsql.Comparable, error) {
 		return nullComparable(m), nil
 	},
 }
 
 var OpOrder = []string{opEq, opIn, opNe1, opNe2, opNotIn, opGt, opGte, opLt, opLte, opLike, opNotLike, opBetween, opNotBetween, opNull}
 
-type Statement func(field string, value interface{}) (xsqlIface.XSqlizer, error)
+type Statement func(field string, value interface{}) (zsql.ZSqlizer, error)
 
 var OpOp = map[string]Statement{
-	opEq: func(field string, value interface{}) (xsqlIface.XSqlizer, error) {
+	opEq: func(field string, value interface{}) (zsql.ZSqlizer, error) {
 		return squirrel.Eq{field: value}, nil
 	},
-	opNe1: func(field string, value interface{}) (xsqlIface.XSqlizer, error) {
+	opNe1: func(field string, value interface{}) (zsql.ZSqlizer, error) {
 		return squirrel.NotEq{field: value}, nil
 	},
-	opNe2: func(field string, value interface{}) (xsqlIface.XSqlizer, error) {
+	opNe2: func(field string, value interface{}) (zsql.ZSqlizer, error) {
 		return squirrel.NotEq{field: value}, nil
 	},
-	opIn: func(field string, value interface{}) (xsqlIface.XSqlizer, error) {
+	opIn: func(field string, value interface{}) (zsql.ZSqlizer, error) {
 		if reflect.ValueOf(value).Kind() == reflect.Slice {
 			return squirrel.Eq{field: value}, nil
 		}
 		return squirrel.Eq{}, pkg.ErrNotASliceValueForInStatement
 	},
-	opNotIn: func(field string, value interface{}) (xsqlIface.XSqlizer, error) {
+	opNotIn: func(field string, value interface{}) (zsql.ZSqlizer, error) {
 		if reflect.ValueOf(value).Kind() == reflect.Slice {
 			return squirrel.NotEq{field: value}, nil
 		}
 		return squirrel.NotEq{}, pkg.ErrNotASliceValueForInStatement
 	},
-	opBetween: func(field string, value interface{}) (xsqlIface.XSqlizer, error) {
+	opBetween: func(field string, value interface{}) (zsql.ZSqlizer, error) {
 		if reflect.ValueOf(value).Kind() == reflect.Slice && reflect.ValueOf(value).Len() == 2 {
 			return squirrel.Expr(fmt.Sprintf("%s BETWEEN ? AND ?", field),
 				reflect.ValueOf(value).Index(0).Interface(),
@@ -415,7 +415,7 @@ var OpOp = map[string]Statement{
 		}
 		return squirrel.Eq{}, pkg.ErrNotASliceValueForBetweenStatement
 	},
-	opNotBetween: func(field string, value interface{}) (xsqlIface.XSqlizer, error) {
+	opNotBetween: func(field string, value interface{}) (zsql.ZSqlizer, error) {
 		if reflect.ValueOf(value).Kind() == reflect.Slice && reflect.ValueOf(value).Len() == 2 {
 			return squirrel.Expr(fmt.Sprintf("%s NOT BETWEEN ? AND ?", field),
 				reflect.ValueOf(value).Index(0).Interface(),
@@ -424,25 +424,25 @@ var OpOp = map[string]Statement{
 		}
 		return squirrel.Eq{}, pkg.ErrNotASliceValueForBetweenStatement
 	},
-	opGt: func(field string, value interface{}) (xsqlIface.XSqlizer, error) {
+	opGt: func(field string, value interface{}) (zsql.ZSqlizer, error) {
 		return squirrel.Gt{field: value}, nil
 	},
-	opGte: func(field string, value interface{}) (xsqlIface.XSqlizer, error) {
+	opGte: func(field string, value interface{}) (zsql.ZSqlizer, error) {
 		return squirrel.GtOrEq{field: value}, nil
 	},
-	opLt: func(field string, value interface{}) (xsqlIface.XSqlizer, error) {
+	opLt: func(field string, value interface{}) (zsql.ZSqlizer, error) {
 		return squirrel.Lt{field: value}, nil
 	},
-	opLte: func(field string, value interface{}) (xsqlIface.XSqlizer, error) {
+	opLte: func(field string, value interface{}) (zsql.ZSqlizer, error) {
 		return squirrel.LtOrEq{field: value}, nil
 	},
-	opLike: func(field string, value interface{}) (xsqlIface.XSqlizer, error) {
+	opLike: func(field string, value interface{}) (zsql.ZSqlizer, error) {
 		return squirrel.Like{field: value}, nil
 	},
-	opNotLike: func(field string, value interface{}) (xsqlIface.XSqlizer, error) {
+	opNotLike: func(field string, value interface{}) (zsql.ZSqlizer, error) {
 		return squirrel.NotLike{field: value}, nil
 	},
-	opNull: func(field string, value interface{}) (xsqlIface.XSqlizer, error) {
+	opNull: func(field string, value interface{}) (zsql.ZSqlizer, error) {
 		fmt.Println(field, value)
 		return squirrel.Expr(fmt.Sprintf("%s %s", field, value.(NullType).String())), nil
 	},

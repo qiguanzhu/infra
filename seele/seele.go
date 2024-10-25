@@ -14,17 +14,14 @@
  *　　 ┗━┓┓┏━━┳┓┏┛
  *　　   ┃┫┫  ┃┫┫
  *      ┗┻┛　 ┗┻┛
- @Time    : 2024/9/30 -- 15:02
+ @Time    : 2024/10/23 -- 11:12
  @Author  : 亓官竹 ❤️ MONEY
  @Copyright 2024 亓官竹
- @Description: dbrouter.go
+ @Description: seele.go
 */
 
-package xsqlIface
+package seele
 
-// InstancePlayer ...
-type InstancePlayer interface {
-	GetType() string
-	Close() error
-	Reload() error
-}
+type ToPtrMod[from any] func() (to *from)
+
+type MultiToPtrMod[elem any, from []elem] func() (to []*elem)

@@ -20,11 +20,11 @@
  @Description: server.go
 */
 
-package server
+package zserver
 
 import (
 	"context"
-	"github.com/qiguanzhu/infra/seele/xconfigIface"
+	"github.com/qiguanzhu/infra/seele/zconfig"
 )
 
 type ServConfType string
@@ -46,5 +46,5 @@ type Server[servInfo any] interface {
 	IsLocalRunning(ctx context.Context) bool           // return true if server is local running
 	IsStopped(ctx context.Context) bool                // is stopped
 	ServInfos(ctx context.Context) map[string]servInfo // serv infos
-	ConfigCenter(ctx context.Context) xconfigIface.ConfigCenter
+	ConfigCenter(ctx context.Context) zconfig.ConfigCenter
 }
