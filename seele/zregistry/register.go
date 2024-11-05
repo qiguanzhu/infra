@@ -43,8 +43,8 @@ type Register interface {
 	RefreshTtl(ctx context.Context, path string, ttl time.Duration) error
 	// SetNx 设置key值，只有不存在时才设置，否则失败
 	SetNx(ctx context.Context, path, val string) error
-	// Regist 执行注册，注册后会一直维持心跳。调用注册时会将当前值设置到节点上
-	Regist(ctx context.Context, path, val string, heatBeat time.Duration, ttl time.Duration) error
+	// Reg 执行注册，注册后会一直维持心跳。调用注册时会将当前值设置到节点上
+	Reg(ctx context.Context, path, val string, heatBeat time.Duration, ttl time.Duration) error
 	// Watch 监听一个节点
 	Watch(ctx context.Context, path string, handler func(Handler))
 	//	锁相关接口

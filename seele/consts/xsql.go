@@ -22,8 +22,6 @@
 
 package consts
 
-import "time"
-
 const (
 	// MysqlConfNamespace mysql apollo conf namespace
 	MysqlConfNamespace = "mysql"
@@ -44,12 +42,12 @@ const (
 	// KeySep
 	KeySep = "."
 
-	DefaultMaxIdleConns = 64
-	DefaultMaxOpenConns = 128
-	DefaultReadTimeout  = time.Second * 10
-	DefaultWriteTimeout = time.Second * 10
-	DefaultMaxLifeTime  = time.Hour * 6
-	DefaultTimeout      = time.Second * 3
+	DefaultMaxIdleConns       = 64
+	DefaultMaxOpenConns       = 128
+	DefaultReadTimeoutSecond  = 10
+	DefaultWriteTimeoutSecond = 10
+	DefaultMaxLifeTimeSecond  = 3600 * 6
+	DefaultTimeoutSecond      = 3
 )
 
 const (

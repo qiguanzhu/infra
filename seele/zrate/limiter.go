@@ -14,13 +14,15 @@
  *　　 ┗━┓┓┏━━┳┓┏┛
  *　　   ┃┫┫  ┃┫┫
  *      ┗┻┛　 ┗┻┛
- @Time    : 2024/10/9 -- 14:58
+ @Time    : 2024/10/28 -- 17:17
  @Author  : 亓官竹 ❤️ MONEY
  @Copyright 2024 亓官竹
- @Description: breaker.go
+ @Description: limiter.go
 */
 
-package zbreaker
+package zrate
 
-type BreakerManagerProxy interface {
+type RateLimiter interface {
+	Limit() error
+	ChangeQpsThreshold(newQpsThreshold int64)
 }

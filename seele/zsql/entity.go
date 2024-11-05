@@ -24,19 +24,45 @@ package zsql
 
 import (
 	"database/sql"
+	"github.com/qiguanzhu/infra/seele/consts"
 	"time"
 )
 
 // MysqlConf ...
 type MysqlConf struct {
-	MaxIdleConns     int    `properties:"maxIdleConns"`
-	MaxOpenConns     int    `properties:"maxOpenConns"`
-	MaxLifeTimeSec   int    `properties:"maxLifeTimeSec"`
-	TimeoutMsec      int    `properties:"timeoutMsec"`
-	ReadTimeoutMsec  int    `properties:"readTimeoutMsec"`
-	WriteTimeoutMsec int    `properties:"writeTimeoutMsec"`
-	Username         string `properties:"username"`
-	Password         string `properties:"password"`
+	DBName  string   `properties:"dbName" json:"dbName" yaml:"dbName"`
+	DBAddrs []string `properties:"dbAddrs" json:"dbAddrs" yaml:"dbAddrs"`
+
+	MaxIdleConns     int    `properties:"maxIdleConns" json:"maxIdleConns" yaml:"maxIdleConns"`
+	MaxOpenConns     int    `properties:"maxOpenConns" json:"maxOpenConns" yaml:"maxOpenConns"`
+	MaxLifeTimeSec   int    `properties:"maxLifeTimeSec" json:"maxLifeTimeSec" yaml:"maxLifeTimeSec"`
+	TimeoutMsec      int    `properties:"timeoutMsec" json:"timeoutMsec" yaml:"timeoutMsec"`
+	ReadTimeoutMsec  int    `properties:"readTimeoutMsec" json:"readTimeoutMsec" yaml:"readTimeoutMsec"`
+	WriteTimeoutMsec int    `properties:"writeTimeoutMsec" json:"writeTimeoutMsec" yaml:"writeTimeoutMsec"`
+	Username         string `properties:"username" json:"username" yaml:"username"`
+	Password         string `properties:"password" json:"password" yaml:"password"`
+}
+
+func (c *MysqlConf) LoadDefault(insName string) {
+	if c.TimeoutMsec == 0 {
+		c.TimeoutMsec = consts.DefaultTimeoutSecond
+	}
+	if c.ReadTimeoutMsec == 0 {
+		c.ReadTimeoutMsec = consts.DefaultReadTimeoutSecond
+	}
+	if c.WriteTimeoutMsec == 0 {
+		c.WriteTimeoutMsec = consts.DefaultWriteTimeoutSecond
+	}
+	if c.MaxLifeTimeSec == 0 {
+		c.MaxLifeTimeSec = consts.DefaultMaxLifeTimeSecond
+	}
+	if c.MaxIdleConns == 0 {
+		c.MaxIdleConns = consts.DefaultMaxIdleConns
+	}
+	if c.MaxOpenConns == 0 {
+		c.MaxOpenConns = consts.DefaultMaxOpenConns
+	}
+
 }
 
 type Cfg struct {

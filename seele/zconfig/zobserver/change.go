@@ -20,7 +20,7 @@
  @Description: config.go
 */
 
-package zconfig
+package zobserver
 
 // ChangeType ...
 type ChangeType int
@@ -35,6 +35,9 @@ const (
 	MODIFY
 	// DELETE change type:delete
 	DELETE
+)
+
+const (
 	// Apollo change event source:apollo
 	Apollo ChangeEventSource = iota
 )

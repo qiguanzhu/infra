@@ -14,13 +14,23 @@
  *　　 ┗━┓┓┏━━┳┓┏┛
  *　　   ┃┫┫  ┃┫┫
  *      ┗┻┛　 ┗┻┛
- @Time    : 2024/10/9 -- 14:58
+ @Time    : 2024/11/4 -- 17:13
  @Author  : 亓官竹 ❤️ MONEY
  @Copyright 2024 亓官竹
- @Description: breaker.go
+ @Description: zatomic.go : easier to use atomic
 */
 
-package zbreaker
+package zatomic
 
-type BreakerManagerProxy interface {
+import "time"
+
+type ZAtomic[Elem any] interface {
+	Set(Elem)
+	Get() Elem
+	CompareAndSwap(Elem, Elem) bool
+}
+
+type ZAtomicNumLike[Elem int32 | int64 | float64 | time.Duration] interface {
+	Add(Elem) Elem
+	ZAtomic[Elem]
 }

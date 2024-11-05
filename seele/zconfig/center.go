@@ -24,6 +24,7 @@ package zconfig
 
 import (
 	"context"
+	"github.com/qiguanzhu/infra/seele/zconfig/zobserver"
 )
 
 // Option ...
@@ -34,10 +35,10 @@ type ConfigureType string
 
 type ConfigCenter interface {
 	// RegisterObserver register observer return recall func to cancel observer
-	RegisterObserver(ctx context.Context, observer *ConfigObserver) (recall func())
-	// Stop stop client include cancel client ctx, cancel longpoller ctx, close updateChan
+	RegisterObserver(ctx context.Context, observer *zobserver.ConfigObserver) (recall func())
+	// Stop stop client include cancel client ctx, cancel long poller ctx, close updateChan
 	Stop(ctx context.Context) error
-	// SubscribeNamespaces subscibe new namespaces if init not set
+	// SubscribeNamespaces subscribe new namespaces if init not set
 	SubscribeNamespaces(ctx context.Context, namespaceNames []string) error
 	// GetString get string value form default namespace application
 	GetString(ctx context.Context, key string) (string, bool)
