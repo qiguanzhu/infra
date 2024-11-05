@@ -14,13 +14,17 @@
  *　　 ┗━┓┓┏━━┳┓┏┛
  *　　   ┃┫┫  ┃┫┫
  *      ┗┻┛　 ┗┻┛
- @Time    : 2024/10/9 -- 14:58
+ @Time    : 2024/10/25 -- 18:08
  @Author  : 亓官竹 ❤️ MONEY
  @Copyright 2024 亓官竹
- @Description: breaker.go
+ @Description: ip.go
 */
 
-package zbreaker
+package zip
 
-type BreakerManagerProxy interface {
+import "context"
+
+type IpParser[IpRegion any] interface {
+	// ip获取区域，返回格式为 "国家/地区-省-市"，有可能解析不出来，解析不出来为空
+	GetRegion(ctx context.Context, ip string) IpRegion
 }

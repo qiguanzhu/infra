@@ -20,7 +20,7 @@
  @Description: observer.go
 */
 
-package zconfig
+package zobserver
 
 import (
 	"context"

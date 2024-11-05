@@ -14,13 +14,20 @@
  *　　 ┗━┓┓┏━━┳┓┏┛
  *　　   ┃┫┫  ┃┫┫
  *      ┗┻┛　 ┗┻┛
- @Time    : 2024/10/9 -- 14:58
+ @Time    : 2024/10/25 -- 16:34
  @Author  : 亓官竹 ❤️ MONEY
  @Copyright 2024 亓官竹
- @Description: breaker.go
+ @Description: client.go
 */
 
-package zbreaker
+package zservice
 
-type BreakerManagerProxy interface {
+type ClientLookup[ServInfo any] interface {
+	GetServAddr(processor, key string) *ServInfo
+	GetServAddrWithServId(servId int, processor, key string) *ServInfo
+	GetServAddrWithGroup(group string, processor, key string) *ServInfo
+	GetAllServAddr(processor string) []*ServInfo
+	GetAllServAddrWithGroup(group, processor string) []*ServInfo
+	ServKey() string
+	ServPath() string
 }

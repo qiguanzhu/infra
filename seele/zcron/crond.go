@@ -29,9 +29,9 @@ import (
 
 // CronRunnerProxy
 // entry of cron CronSchedulerModel
-type CronRunnerProxy interface {
-	Register(remark string, unit CronUnit) CronRunnerProxy
-	ForceRegister(remark string, unit CronUnit) CronRunnerProxy // if you want to change one unit already registered in remark
+type CronRunnerProxy[unit CronUnit] interface {
+	Register(remark string, u unit) CronRunnerProxy[unit]
+	ForceRegister(remark string, u unit) CronRunnerProxy[unit] // if you want to change one unit already registered in remark
 	Run(ctx context.Context)
 }
 
