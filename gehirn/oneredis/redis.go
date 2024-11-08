@@ -14,22 +14,36 @@
  *　　 ┗━┓┓┏━━┳┓┏┛
  *　　   ┃┫┫  ┃┫┫
  *      ┗┻┛　 ┗┻┛
- @Time    : 2024/10/18 -- 15:20
+ @Time    : 2024/11/5 -- 17:50
  @Author  : 亓官竹 ❤️ MONEY
  @Copyright 2024 亓官竹
- @Description: manager_test.go
+ @Description: redis.go
 */
 
-package fastsql
+package oneredis
 
 import (
 	"fmt"
-	_ "github.com/go-sql-driver/mysql" // 驱动
-	"testing"
+
+	"github.com/redis/go-redis/v9"
 )
 
-func TestConnect(t *testing.T) {
-	dsn := "root:w12w23B(@tcp(127.0.0.1:3306)/iap?parseTime=true&charset=utf8mb4&loc=Asia%2FShanghai"
-	client := MustConnect(dsn)
-	fmt.Println(client)
+// redis://role:pwd@addr:6379/database
+// redis-cli -h addr -p 6379 -a role:pwd
+// select database
+
+func Connect(dsn string) (*redis.Client, error) {
+	options, err := redis.ParseURL(dsn)
+	if err != nil {
+		return nil, err
+	}
+	return redis.NewClient(options), nil
+}
+
+func MustConnect(dsn string) *redis.Client {
+	cli, err := Connect(dsn)
+	if err != nil {
+		panic(fmt.Sprintf("connect to redis %s error %+v", dsn, err))
+	}
+	return cli
 }

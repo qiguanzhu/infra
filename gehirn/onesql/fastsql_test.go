@@ -20,11 +20,14 @@
  @Description: fastsql_test.go
 */
 
-package fastsql
+package onesql
 
-import "testing"
+import (
+	"github.com/qiguanzhu/infra/nerv/magi/xreflect"
+	"testing"
+)
 
-func TestMapping(t *testing.T) {
+func TestMirroring(t *testing.T) {
 	type Sa struct {
 		A string
 	}
@@ -42,20 +45,20 @@ func TestMapping(t *testing.T) {
 	sa := new(Sa)
 	sa2 := Sa{}
 
-	err := Mapping(src, sb)
+	err := xreflect.Mirroring(src, sb)
 	t.Log(src, sb, err)
 	// &{a} &{} src and tar must have the same struct type
 
-	err = Mapping(src, ss)
+	err = xreflect.Mirroring(src, ss)
 	t.Log(src, ss, err)
 	// &{a} &{0} src and tar must have the same struct type
 
-	err = Mapping(src, sa)
+	err = xreflect.Mirroring(src, sa)
 	t.Log(src, sa, err)
 	// &{a} &{a} <nil>
 	// Success!!
 
-	err = Mapping(src, sa2)
+	err = xreflect.Mirroring(src, sa2)
 	t.Log(src, sa2, err)
 	// &{a} {} src must be a pointer to a struct
 

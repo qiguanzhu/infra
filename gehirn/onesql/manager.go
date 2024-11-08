@@ -20,7 +20,7 @@
  @Description: manager.go
 */
 
-package fastsql
+package onesql
 
 import (
 	"database/sql"

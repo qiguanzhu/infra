@@ -14,14 +14,16 @@
  *　　 ┗━┓┓┏━━┳┓┏┛
  *　　   ┃┫┫  ┃┫┫
  *      ┗┻┛　 ┗┻┛
- @Time    : 2024/10/12 -- 16:49
+ @Time    : 2024/11/5 -- 15:58
  @Author  : 亓官竹 ❤️ MONEY
  @Copyright 2024 亓官竹
- @Description: ob.go
+ @Description: gehirn.go
 */
 
-package apogo
+package gehirn
 
-type ChangeEventObserver interface {
-	HandleChangeEvent(event *ChangeEvent)
+func PanicIf(err error) {
+	if err != nil {
+		panic(err)
+	}
 }
