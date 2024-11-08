@@ -20,9 +20,10 @@
  @Description: scanner.go
 */
 
-package fastsql
+package onesql
 
 import (
+	"github.com/qiguanzhu/infra/nerv/magi/xreflect"
 	"github.com/qiguanzhu/infra/pkg"
 	"github.com/qiguanzhu/infra/seele/zsql"
 	"github.com/qiguanzhu/infra/seele/zsql/sqlutils"
@@ -59,7 +60,7 @@ func (s fastScanner) Scan(rows zsql.Rows, target any, b zsql.BindFunc) error {
 		value := reflect.ValueOf(resI)
 		// convert -> []DObj{}, call Interface() to get real value
 		convert := value.Convert(reflect.TypeOf(target).Elem())
-		return Mapping(convert.Interface(), target)
+		return xreflect.Mirroring(convert.Interface(), target)
 	} else {
 		for rows.Next() {
 			res, err := b(rows)
@@ -69,7 +70,7 @@ func (s fastScanner) Scan(rows zsql.Rows, target any, b zsql.BindFunc) error {
 			if nil == res {
 				return pkg.ErrScannerEmptyResult
 			}
-			return Mapping(res, target)
+			return xreflect.Mirroring(res, target)
 		}
 		return pkg.ErrScannerEmptyResult
 	}

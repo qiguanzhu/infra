@@ -20,7 +20,7 @@
  @Description: builder.go
 */
 
-package fastsql
+package onesql
 
 import (
 	"context"
