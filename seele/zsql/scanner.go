@@ -22,8 +22,8 @@
 
 package zsql
 
-// ScannerProxy 读取查询结果 or 执行结果 到 目标结构体
-type ScannerProxy interface {
+// Scanner 读取查询结果 or 执行结果 到 目标结构体
+type Scanner interface {
 	Scan(rows Rows, target any, f BindFunc) error
 	ScanClose(rows Rows, target any, f BindFunc) error
 	ScanMap(rows Rows) ([]map[string]any, error)
