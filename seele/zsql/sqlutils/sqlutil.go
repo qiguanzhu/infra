@@ -132,7 +132,7 @@ func quoteField(field string) string {
 	return field
 }
 
-func BuildInsert(table string, setMap []map[string]interface{}, insertType insertType) (string, []interface{}, error) {
+func BuildInsert(table string, setMap []map[string]interface{}, it insertType) (string, []interface{}, error) {
 	format := "%s %s (%s) VALUES %s"
 	var fields []string
 	var vals []interface{}
@@ -152,7 +152,27 @@ func BuildInsert(table string, setMap []map[string]interface{}, insertType inser
 			vals = append(vals, val)
 		}
 	}
-	return fmt.Sprintf(format, insertType, quoteField(table), strings.Join(fields, ","), strings.Join(sets, ",")), vals, nil
+	return fmt.Sprintf(format, it, quoteField(table), strings.Join(fields, ","), strings.Join(sets, ",")), vals, nil
+}
+
+func BuildUpsert(table string, setMap map[string]interface{}, it insertType) (string, []interface{}, error) {
+	format := `%s %s (%s) VALUES %s ON DUPLICATE KEY UPDATE %s`
+	var fields []string
+	var vals []interface{}
+	var colCol []string
+	var colVal []interface{}
+	fields = resolveFields(setMap)
+	placeholder := "(" + strings.TrimRight(strings.Repeat("?,", len(fields)), ",") + ")"
+	for _, field := range fields {
+		val, ok := setMap[strings.Trim(field, "`")]
+		if !ok {
+			return "", nil, pkg.ErrBuilderInsertDataNotMatch
+		}
+		vals = append(vals, val)
+		colCol = append(colCol, fmt.Sprintf("%s=?", field))
+		colVal = append(colVal, val)
+	}
+	return fmt.Sprintf(format, it, quoteField(table), strings.Join(fields, ","), placeholder, strings.Join(colCol, ",")), append(vals, colVal...), nil
 }
 
 func BuildUpdate(table string, update map[string]interface{}, clauses *StatementClauses) (string, []interface{}, error) {
@@ -738,4 +758,17 @@ func ColumnCalculator(columns ...string) string {
 		return columns[0]
 	}
 	return strings.Join(columns, ",")
+}
+
+// Page2Offset
+// page2 limit10 -> offset20 limit10
+func Page2Offset(page, limit int) (offset int) {
+	return (page - 1) * limit
+}
+
+// Offset2Page
+// offset20 limit10 total101 -> cur2 nxt3 total11
+// offset100 limit10 total101 -> cur10 nxt11 total11
+func Offset2Page(offset, limit, total int) (nxtPage, lastPage int) {
+	return offset/limit + 1, total/limit + 1
 }

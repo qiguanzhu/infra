@@ -59,6 +59,6 @@ type ConfigureProxy[Config any] interface {
 }
 
 type SqlConstructor interface {
-	GetBuilder() BuilderProxy
-	GetScanner() ScannerProxy
+	GetBuilder() Builder
+	GetScanner() Scanner
 }

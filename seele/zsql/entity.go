@@ -24,7 +24,7 @@ package zsql
 
 import (
 	"database/sql"
-	"github.com/qiguanzhu/infra/seele/consts"
+	"github.com/qiguanzhu/infra/pkg/consts"
 	"time"
 )
 

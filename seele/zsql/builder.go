@@ -24,13 +24,14 @@ package zsql
 
 import "context"
 
-// BuilderProxy 构造 查询语句 & 查询参数
-type BuilderProxy interface {
+// Builder 构造 查询语句 & 查询参数
+type Builder interface {
 	BuildSelect(tableName string, where map[string]interface{}, selectedField []string) (query string, args []interface{}, err error)
 	BuildSelectWithContext(ctx context.Context, tableName string, where map[string]interface{}, selectedField []string) (query string, args []interface{}, err error)
 	BuildUpdate(tableName string, where map[string]interface{}, update map[string]interface{}) (string, []interface{}, error)
 	BuildDelete(tableName string, where map[string]interface{}) (string, []interface{}, error)
 	BuildInsert(tableName string, data []map[string]interface{}) (string, []interface{}, error)
+	BuildUpsert(tableName string, data map[string]interface{}) (string, []interface{}, error)
 	BuildInsertIgnore(tableName string, data []map[string]interface{}) (string, []interface{}, error)
 	BuildReplaceIgnore(tableName string, data []map[string]interface{}) (string, []interface{}, error)
 	AggregateQuery(ctx context.Context, db XDB, tableName string, where map[string]interface{}, aggregate AggregateSymbolBuilder) (ResultResolver, error)
